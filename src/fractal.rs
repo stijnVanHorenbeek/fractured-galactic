@@ -1,7 +1,7 @@
 extern crate num_complex;
 use num_complex::Complex;
 
-pub(crate) const MAX_ITER: u32 = 1000;
+pub(crate) const MAX_ITER: u32 = 100;
 
 pub fn mandelbrot(c: Complex<f64>) -> u32 {
     let mut z = Complex::new(0.0, 0.0);
