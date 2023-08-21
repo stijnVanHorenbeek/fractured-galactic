@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 num-complex = "0.4.4"
 sdl2 = "0.35.2"
+anyhow = "1.0.75"
