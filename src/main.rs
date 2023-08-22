@@ -7,7 +7,8 @@ use num_complex::Complex;
 use renderer::Renderer;
 use sdl2::pixels::Color;
 
-const MOVE_SPEED: f64 = 0.05;
+const ACCELERATION: f64 = 0.01;
+const DECELERATION: f64 = 0.005;
 const CROSSHAIR_LENGTH: i32 = 10;
 const CROSSHAIR_COLOR: Color = Color::RGB(255, 0, 0);
 const BOUND_X_MIN: f64 = -1.8;
@@ -15,15 +16,26 @@ const BOUND_X_MAX: f64 = 1.8;
 const BOUND_Y_MIN: f64 = -1.8;
 const BOUND_Y_MAX: f64 = 1.8;
 
-fn update_position(center_x: &mut f64, center_y: &mut f64, direction: Option<Direction>) {
+fn update_position(
+    center_x: &mut f64,
+    center_y: &mut f64,
+    direction: Option<Direction>,
+    move_speed: &mut f64,
+) {
     if let Some(dir) = direction {
+        *move_speed += ACCELERATION;
+        *move_speed = move_speed.clamp(0.0, 1.0);
         match dir {
-            Direction::Up => *center_y -= MOVE_SPEED,
-            Direction::Down => *center_y += MOVE_SPEED,
-            Direction::Left => *center_x -= MOVE_SPEED,
-            Direction::Right => *center_x += MOVE_SPEED,
+            Direction::Down => *center_y += *move_speed,
+            Direction::Up => *center_y -= *move_speed,
+            Direction::Left => *center_x -= *move_speed,
+            Direction::Right => *center_x += *move_speed,
         }
+    } else {
+        *move_speed -= DECELERATION;
+        *move_speed = move_speed.max(0.0);
     }
+
     *center_x = center_x.clamp(BOUND_X_MIN, BOUND_X_MAX);
     *center_y = center_y.clamp(BOUND_Y_MIN, BOUND_Y_MAX);
 }
@@ -92,7 +104,8 @@ async fn main() {
             break;
         }
 
-        update_position(&mut center_x, &mut center_y, direction);
+        let mut move_speed: f64 = 0.0;
+        update_position(&mut center_x, &mut center_y, direction, &mut move_speed);
         let (mandelbrot, julia) = calc_fractals(
             center_x,
             center_y,
