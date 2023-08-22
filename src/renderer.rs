@@ -25,4 +25,16 @@ impl Renderer {
         self.canvas.set_draw_color(color);
         self.canvas.draw_point((x, y)).unwrap();
     }
+
+    pub fn draw_crosshair(&mut self, x: i32, y: i32, color: Color, length: i32) {
+        self.canvas.set_draw_color(color);
+        // horizontal line
+        self.canvas
+            .draw_line((x - length, y), (x + length, y))
+            .unwrap();
+        // vertical line
+        self.canvas
+            .draw_line((x, y - length), (x, y + length))
+            .unwrap();
+    }
 }

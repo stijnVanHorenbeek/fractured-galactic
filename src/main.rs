@@ -13,7 +13,10 @@ async fn main() {
 
     let mut center_x = 0.0;
     let mut center_y = 0.0;
+
     const MOVE_SPEED: f64 = 0.05;
+    const CROSSHAIR_LENGTH: i32 = 10;
+    const CROSSHAIR_COLOR: Color = Color::RGB(255, 0, 0);
 
     loop {
         let (running, direction) = controller.process_events();
@@ -62,6 +65,16 @@ async fn main() {
                 renderer.draw_point(x as i32 + renderer::WIDTH as i32 / 2, y as i32, color)
             }
         }
+
+        let crosshair_x = (center_x + 2.0) * (renderer::WIDTH as f64 / 2.0) / 4.0;
+        let crosshair_y = (center_y + 2.0) * (renderer::HEIGHT as f64) / 4.0;
+        renderer.draw_crosshair(
+            crosshair_x as i32,
+            crosshair_y as i32,
+            CROSSHAIR_COLOR,
+            CROSSHAIR_LENGTH,
+        );
+
         renderer.canvas.present();
     }
 }
