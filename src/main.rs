@@ -17,7 +17,10 @@ async fn main() {
     const MOVE_SPEED: f64 = 0.05;
     const CROSSHAIR_LENGTH: i32 = 10;
     const CROSSHAIR_COLOR: Color = Color::RGB(255, 0, 0);
-
+    const BOUND_X_MIN: f64 = -1.8;
+    const BOUND_X_MAX: f64 = 1.8;
+    const BOUND_Y_MIN: f64 = -1.8;
+    const BOUND_Y_MAX: f64 = 1.8;
     loop {
         let (running, direction) = controller.process_events();
         if !running {
@@ -32,6 +35,8 @@ async fn main() {
                 Direction::Right => center_x += MOVE_SPEED,
             }
         }
+        center_x = center_x.clamp(BOUND_X_MIN, BOUND_X_MAX);
+        center_y = center_y.clamp(BOUND_Y_MIN, BOUND_Y_MAX);
 
         let mandelbrot_data = fractal::compute_mandelbrot(
             center_x,
