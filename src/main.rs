@@ -2,6 +2,7 @@ mod controller;
 mod fractal;
 mod renderer;
 use controller::{Controller, Direction};
+use num_complex::Complex;
 use sdl2::pixels::Color;
 
 #[tokio::main]
@@ -29,19 +30,36 @@ async fn main() {
             }
         }
 
-        let fractal_data = fractal::compute_fractal(
+        let mandelbrot_data = fractal::compute_mandelbrot(
             center_x,
             center_y,
-            renderer::WIDTH as usize,
+            (renderer::WIDTH / 2) as usize,
             renderer::HEIGHT as usize,
         )
         .await;
 
-        for (y, row) in fractal_data.iter().enumerate() {
+        let julia_data = fractal::compute_julia_set(
+            Complex::new(center_x, center_y),
+            0.0,
+            0.0,
+            (renderer::WIDTH / 2) as usize,
+            renderer::HEIGHT as usize,
+        )
+        .await;
+
+        for (y, row) in mandelbrot_data.iter().enumerate() {
             for (x, &val) in row.iter().enumerate() {
                 let color = (val as f64 * 255.0 / fractal::MAX_ITER as f64) as u8;
                 let color = Color::RGB(color, color, color);
                 renderer.draw_point(x as i32, y as i32, color)
+            }
+        }
+
+        for (y, row) in julia_data.iter().enumerate() {
+            for (x, &val) in row.iter().enumerate() {
+                let color = (val as f64 * 255.0 / fractal::MAX_ITER as f64) as u8;
+                let color = Color::RGB(color, color, color);
+                renderer.draw_point(x as i32 + renderer::WIDTH as i32 / 2, y as i32, color)
             }
         }
         renderer.canvas.present();

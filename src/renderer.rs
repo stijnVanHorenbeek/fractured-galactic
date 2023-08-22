@@ -3,7 +3,7 @@ use sdl2::pixels::Color;
 extern crate sdl2;
 
 pub(crate) const WIDTH: u32 = 1024;
-pub(crate) const HEIGHT: u32 = 800;
+pub(crate) const HEIGHT: u32 = 512;
 
 pub struct Renderer {
     pub canvas: sdl2::render::Canvas<sdl2::video::Window>,
